@@ -1,0 +1,3 @@
+Hello, I am trying
+To copy
+with stream
