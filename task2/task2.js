@@ -7,14 +7,14 @@ const { Transform } = require('stream');
 
 // CREATE TRANSFOR STREAM
 const transformedStream = new Transform({
-  readableObjectMode: true,
-  writableObjectMode: true,
+  objectMode: true, // fixed objectMode
   transform(chunk, coding, callback) {
-    try {
-      const users = JSON.parse(chunk);
-      console.log(chunk)
-      users.forEach((item) => this.push(JSON.stringify({ ...item, timestamp: new Date().toISOString() }) + "," + '\n'))
+    try { 
+      
+      chunk.timestamp = new Date().toISOString();
+      this.push(chunk)
       callback();
+      
     } catch (err) {
       callback(err.message);
     }
@@ -22,8 +22,8 @@ const transformedStream = new Transform({
 });
 
 // CREATE READ AND WRITE STREAMS
-const readStream = fs.createReadStream('data.json', { encoding: 'utf8' });
-const writeToStream = fs.createWriteStream('writeTo.json');
+const readStream = fs.createReadStream('./task2/data.json', { encoding: 'utf8' });
+const writeToStream = fs.createWriteStream('./task2/writeTo.json');
 
 readStream.pipe(transformedStream).pipe(writeToStream);
 
